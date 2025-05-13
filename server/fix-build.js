@@ -8,8 +8,8 @@ console.log('🛠️ Starting comprehensive build fix...');
 // 1. Install required dependencies (use npm directly for more reliable installs)
 console.log('\n📦 Installing required dependencies...');
 try {
-  // Install prom-client and @nlpjs/similarity directly
-  execSync('npm install --no-save prom-client@14.2.0 @nlpjs/similarity@5.0.0-alpha.5', { stdio: 'inherit' });
+  // Install prom-client, @nlpjs/similarity, amqplib, and amqp-connection-manager directly
+  execSync('npm install --no-save prom-client@14.2.0 @nlpjs/similarity@5.0.0-alpha.5 amqplib@0.10.8 amqp-connection-manager@4.1.14', { stdio: 'inherit' });
   console.log('✅ Dependencies installed successfully.');
 } catch (error) {
   console.error('⚠️ Failed to install dependencies:', error.message);
