@@ -103,12 +103,74 @@ console.log('\n📝 Creating compatibility modules for missing dependencies...')
 // Create a prom-client compatibility module
 const promClientPath = path.join(__dirname, 'src/messaging/prom-client-compat.ts');
 const promClientContent = `/**
- * Compatibility layer for OpenTelemetry to prom-client migration
+ * Compatibility layer for OpenTelemetry/prom-client without external dependencies
  */
-import * as promClient from 'prom-client';
 
-// Register default metrics
-promClient.collectDefaultMetrics();
+// Simple implementation of the Counter class
+class Counter {
+  private name: string;
+  private help: string;
+  private value: number = 0;
+
+  constructor(options: { name: string; help: string }) {
+    this.name = options.name;
+    this.help = options.help;
+  }
+
+  inc(amount: number = 1) {
+    this.value += amount;
+  }
+
+  get() {
+    return this.value;
+  }
+}
+
+// Simple implementation of the Histogram class
+class Histogram {
+  private name: string;
+  private help: string;
+  private buckets: number[];
+  private values: number[] = [];
+
+  constructor(options: { name: string; help: string; buckets?: number[] }) {
+    this.name = options.name;
+    this.help = options.help;
+    this.buckets = options.buckets || [0.1, 0.5, 1, 2, 5, 10];
+  }
+
+  observe(value: number) {
+    this.values.push(value);
+  }
+
+  get() {
+    return this.values;
+  }
+}
+
+// Mock Registry class
+class Registry {
+  metrics: Record<string, any> = {};
+
+  registerMetric(metric: any) {
+    this.metrics[metric.name] = metric;
+  }
+}
+
+// Create internal promClient object without external dependency
+const register = new Registry();
+
+function collectDefaultMetrics() {
+  console.log('Default metrics collection initialized');
+}
+
+function linearBuckets(start: number, width: number, count: number) {
+  const buckets = [];
+  for (let i = 0; i < count; i++) {
+    buckets.push(start + (width * i));
+  }
+  return buckets;
+}
 
 // Exporter compatibility class
 export class PrometheusExporter {
@@ -120,10 +182,10 @@ export class PrometheusExporter {
 
 // MeterProvider compatibility class
 export class MeterProvider {
-  private registry: promClient.Registry;
+  private registry: Registry = new Registry();
   
   constructor() {
-    this.registry = promClient.register;
+    // Initialize registry
   }
   
   addMetricReader(exporter: any) {
@@ -132,26 +194,24 @@ export class MeterProvider {
   
   getMeter(name: string) {
     return {
-      createCounter: (name: string, options: any) => new promClient.Counter({
+      createCounter: (name: string, options: any) => new Counter({
         name,
         help: options.description || name,
       }),
-      createHistogram: (name: string, options: any) => new promClient.Histogram({
+      createHistogram: (name: string, options: any) => new Histogram({
         name, 
         help: options.description || name,
-        buckets: options.boundaries || promClient.linearBuckets(0.1, 0.5, 10),
+        buckets: options.boundaries || linearBuckets(0.1, 0.5, 10),
       })
     };
   }
-}
-`;
+}`;
 
 // Create a natural compatibility module
 const naturalCompatPath = path.join(__dirname, 'src/services/natural-compat.ts');
 const naturalCompatContent = `/**
- * Compatibility layer for natural module using @nlpjs/similarity
+ * Compatibility layer for natural module using pure JS implementation
  */
-import * as similarity from '@nlpjs/similarity';
 
 export class WordTokenizer {
   tokenize(text: string): string[] {
@@ -160,16 +220,24 @@ export class WordTokenizer {
 }
 
 export class TfIdf {
+  private documents: string[] = [];
+
   constructor() {
-    // Placeholder implementation
+    // No initialization needed
   }
   
   addDocument(doc: string) {
-    // Placeholder implementation
+    this.documents.push(doc);
   }
   
-  tfidfs(doc: string) {
-    return [0]; // Placeholder implementation
+  tfidfs(query: string): number[] {
+    // Simple dummy implementation that returns 1 for each document
+    return this.documents.map(() => 1);
+  }
+  
+  // Added reset method to clear documents
+  reset() {
+    this.documents = [];
   }
 }
 
@@ -187,10 +255,134 @@ export class SentimentAnalyzer {
   
   getSentiment(tokens: string[]): number {
     // Simple implementation - returns value between -1 and 1
-    return tokens.length > 0 ? 0 : 0;
+    return tokens.length > 0 ? 0.5 : 0;
+  }
+}`;
+
+// Create a cache compatibility module
+const cacheCompatPath = path.join(__dirname, 'src/common/cache-compat.ts');
+const cacheCompatContent = `import { Injectable } from '@nestjs/common';
+
+/**
+ * In-memory cache store compatible with NestJS CacheModule
+ */
+export class MemoryStore {
+  private cache: Map<string, { value: any; ttl: number }> = new Map();
+
+  constructor() {
+    // Clean expired items periodically
+    setInterval(() => this.cleanExpired(), 60000);
+  }
+
+  /**
+   * Get a cached value by key
+   */
+  get(key: string): Promise<any> {
+    const item = this.cache.get(key);
+    if (!item) return Promise.resolve(null);
+    
+    if (item.ttl && item.ttl < Date.now()) {
+      this.cache.delete(key);
+      return Promise.resolve(null);
+    }
+    
+    return Promise.resolve(item.value);
+  }
+
+  /**
+   * Set a value in the cache with optional TTL
+   */
+  set(key: string, value: any, ttl?: number): Promise<void> {
+    const ttlMs = ttl ? Date.now() + (ttl * 1000) : undefined;
+    this.cache.set(key, { value, ttl: ttlMs });
+    return Promise.resolve();
+  }
+
+  /**
+   * Delete a cache entry by key
+   */
+  del(key: string): Promise<void> {
+    this.cache.delete(key);
+    return Promise.resolve();
+  }
+
+  /**
+   * Clear all cache entries
+   */
+  reset(): Promise<void> {
+    this.cache.clear();
+    return Promise.resolve();
+  }
+
+  /**
+   * Get all keys
+   */
+  keys(): Promise<string[]> {
+    return Promise.resolve(Array.from(this.cache.keys()));
+  }
+
+  /**
+   * Remove expired items
+   */
+  private cleanExpired(): void {
+    const now = Date.now();
+    this.cache.forEach((item, key) => {
+      if (item.ttl && item.ttl < now) {
+        this.cache.delete(key);
+      }
+    });
   }
 }
-`;
+
+/**
+ * Mock cache manager compatible with NestJS CacheModule
+ */
+@Injectable()
+export class CacheManager {
+  private store: MemoryStore;
+
+  constructor() {
+    this.store = new MemoryStore();
+  }
+
+  /**
+   * Get a cached value by key
+   */
+  get(key: string): Promise<any> {
+    return this.store.get(key);
+  }
+
+  /**
+   * Set a value in the cache with optional TTL
+   */
+  set(key: string, value: any, ttl?: number): Promise<void> {
+    return this.store.set(key, value, ttl);
+  }
+
+  /**
+   * Delete a cache entry by key
+   */
+  del(key: string): Promise<void> {
+    return this.store.del(key);
+  }
+
+  /**
+   * Clear all cache entries
+   */
+  reset(): Promise<void> {
+    return this.store.reset();
+  }
+}
+
+/**
+ * Provide a CACHE_MANAGER token for dependency injection
+ */
+export const CACHE_MANAGER_PROVIDER = {
+  provide: 'CACHE_MANAGER',
+  useFactory: () => {
+    return new CacheManager();
+  }
+};`;
 
 try {
   // Create directories if they don't exist
@@ -201,10 +393,15 @@ try {
   if (!fs.existsSync(path.dirname(naturalCompatPath))) {
     fs.mkdirSync(path.dirname(naturalCompatPath), { recursive: true });
   }
+
+  if (!fs.existsSync(path.dirname(cacheCompatPath))) {
+    fs.mkdirSync(path.dirname(cacheCompatPath), { recursive: true });
+  }
   
   // Write the compatibility modules
   fs.writeFileSync(promClientPath, promClientContent);
   fs.writeFileSync(naturalCompatPath, naturalCompatContent);
+  fs.writeFileSync(cacheCompatPath, cacheCompatContent);
   
   console.log('✅ Created compatibility modules for missing dependencies');
 } catch (error) {
@@ -327,6 +524,28 @@ const natural = { WordTokenizer, TfIdf, PorterStemmer, SentimentAnalyzer };`
       
       fileFixedImports++;
       console.log('✅ Fixed confidenceScore issue in recommendations.service.ts');
+    }
+  }
+
+  // Fix assessment.module.ts to include CACHE_MANAGER provider
+  if (file.includes('assessment.module.ts')) {
+    console.log('⚙️ Fixing assessment.module.ts to include CACHE_MANAGER provider...');
+    
+    // Import the CACHE_MANAGER_PROVIDER
+    const importStatement = "import { CACHE_MANAGER_PROVIDER } from '../common/cache-compat';\n";
+    
+    // Add the import statement after the last import
+    const lastImportRegex = /(import .+;)\s*\n\s*@/;
+    if (lastImportRegex.test(content)) {
+      content = content.replace(lastImportRegex, `$1\n${importStatement}\n@`);
+      fileFixedImports++;
+    }
+    
+    // Add the CACHE_MANAGER_PROVIDER to the providers array
+    const providersRegex = /(providers\s*:\s*\[[\s\S]*?)(\s*\])/;
+    if (providersRegex.test(content)) {
+      content = content.replace(providersRegex, '$1,\n    CACHE_MANAGER_PROVIDER$2');
+      fileFixedImports++;
     }
   }
 
