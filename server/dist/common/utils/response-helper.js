@@ -46,8 +46,15 @@ function isHybridResponse(obj) {
         && 'success' in obj
         && typeof obj.success === 'boolean';
 }
-function createHybridResponse(data, message = '', successOrProps = true) {
-    const success = typeof successOrProps === 'boolean' ? successOrProps : true;
+function createHybridResponse(data, messageOrSuccess = '', successOrProps = true) {
+    let message = '';
+    let success = typeof successOrProps === 'boolean' ? successOrProps : true;
+    if (typeof messageOrSuccess === 'boolean') {
+        success = messageOrSuccess;
+    }
+    else {
+        message = messageOrSuccess;
+    }
     const additionalProps = typeof successOrProps === 'object' ? successOrProps : {};
     if (data === null || data === undefined) {
         return {

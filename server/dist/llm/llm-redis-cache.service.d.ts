@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { LlmResponse } from '../dto/llm-provider.dto';
+import { LlmResponse } from 'src/dto/llm-provider.dto';
 import { Cache } from 'cache-manager';
 import { LlmCacheService } from './llm-cache.service';
 import { ILlmCacheService } from './llm-provider.service';

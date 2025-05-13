@@ -25,22 +25,22 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiProperty, ApiParam, ApiBody, ApiExtraModels, getSchemaPath, ApiQuery } from '@nestjs/swagger';
 import { AssessmentService } from './assessment.service';
-import { StartAssessmentDto } from '../dto/start-assessment.dto';
-import { SubmitAnswerDto } from '../dto/submit-answer.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { AssessmentSession } from '../entities/assessment_session.entity';
+import { StartAssessmentDto } from 'src/dto/start-assessment.dto';
+import { SubmitAnswerDto } from 'src/dto/submit-answer.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AssessmentSession } from 'src/entities/assessment_session.entity';
 import { Question } from './entities/question.entity';
 import { User as CurrentUser } from './decorators/user.decorator';
-import { User } from '../entities/user.entity';
-import { GetNextQuestionResponseDto, AssessmentResponseDto } from '../dto/assessment.dto';
-import { SkillScoreDto } from '../dto/skill-score.dto';
-import { GetUser } from '../auth/get-user.decorator';
-import { AssessmentOwnerGuard } from '../auth/assessment-owner.guard';
-import { StudentGuard } from '../auth/student.guard';
+import { User } from 'src/entities/user.entity';
+import { GetNextQuestionResponseDto, AssessmentResponseDto } from 'src/dto/assessment.dto';
+import { SkillScoreDto } from 'src/dto/skill-score.dto';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { AssessmentOwnerGuard } from 'src/auth/assessment-owner.guard';
+import { StudentGuard } from 'src/auth/student.guard';
 import { Request as ExpressRequest } from 'express';
-import { ResponseWrapper } from '../common/wrappers/response.wrapper';
-import { LegacyResponseInterceptor } from '../common/interceptors/legacy-response.interceptor';
-import { createHybridResponse } from '../common/utils/response-helper';
+import { ResponseWrapper } from 'src/common/wrappers/response.wrapper';
+import { LegacyResponseInterceptor } from 'src/common/interceptors/legacy-response.interceptor';
+import { createHybridResponse } from 'src/common/utils/response-helper';
 import { MessagingService } from './messaging/messaging.service';
 import { FinishSessionDto } from './dto/finish-session.dto';
 
@@ -337,7 +337,7 @@ export class AssessmentController {
       // Return an immediate response
       return createHybridResponse({
         message: 'Answer submitted for processing',
-      }, true);
+      }, "Operation succeeded", true);
       
     } catch (error) {
       this.logger.error(`Error emitting assessment event: ${error.message}`, error.stack);
@@ -374,7 +374,7 @@ export class AssessmentController {
       // Return an immediate response
       return createHybridResponse({
         message: 'Session completion queued for processing',
-      }, true);
+      }, "Operation succeeded", true);
       
     } catch (error) {
       this.logger.error(`Error emitting finish session event: ${error.message}`, error.stack);

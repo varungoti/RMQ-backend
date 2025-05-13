@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { LlmProviderConfig, LlmResponse } from '../dto/llm-provider.dto';
+import { LlmProviderConfig, LlmResponse } from 'src/dto/llm-provider.dto';
 
 // Define an interface for cache services
 export interface ILlmCacheService {

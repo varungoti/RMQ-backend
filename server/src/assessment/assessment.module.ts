@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AssessmentService } from './assessment.service';
 import { AssessmentController } from './assessment.controller';
-import { AssessmentSession } from '../entities/assessment_session.entity';
-import { AssessmentResponse } from '../entities/assessment_response.entity';
-import { AssessmentSkillScore } from '../entities/assessment_skill_score.entity';
-import { Question } from '../entities/question.entity';
-import { Skill } from '../entities/skill.entity';
-import { User } from '../entities/user.entity';
+import { AssessmentSession } from 'src/entities/assessment_session.entity';
+import { AssessmentResponse } from 'src/entities/assessment_response.entity';
+import { AssessmentSkillScore } from 'src/entities/assessment_skill_score.entity';
+import { Question } from 'src/entities/question.entity';
+import { Skill } from 'src/entities/skill.entity';
+import { User } from 'src/entities/user.entity';
 
 // Import the answer checker components
 import { DefaultAnswerChecker } from './checkers/default-answer.checker';

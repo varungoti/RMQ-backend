@@ -12,25 +12,24 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var AssessmentController_1;
-var _a, _b, _c, _d, _e, _f;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AssessmentController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const assessment_service_1 = require("./assessment.service");
-const start_assessment_dto_1 = require("../dto/start-assessment.dto");
-const submit_answer_dto_1 = require("../dto/submit-answer.dto");
-const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
-const assessment_session_entity_1 = require("../entities/assessment_session.entity");
-const user_entity_1 = require("../entities/user.entity");
-const assessment_dto_1 = require("../dto/assessment.dto");
-const skill_score_dto_1 = require("../dto/skill-score.dto");
-const get_user_decorator_1 = require("../auth/get-user.decorator");
-const assessment_owner_guard_1 = require("../auth/assessment-owner.guard");
-const student_guard_1 = require("../auth/student.guard");
-const response_wrapper_1 = require("../common/wrappers/response.wrapper");
-const legacy_response_interceptor_1 = require("../common/interceptors/legacy-response.interceptor");
-const response_helper_1 = require("../common/utils/response-helper");
+const start_assessment_dto_1 = require("./dto/start-assessment.dto");
+const submit_answer_dto_1 = require("./dto/submit-answer.dto");
+const jwt_auth_guard_1 = require("./auth/jwt-auth.guard");
+const assessment_session_entity_1 = require("./entities/assessment_session.entity");
+const user_entity_1 = require("./entities/user.entity");
+const assessment_dto_1 = require("./dto/assessment.dto");
+const skill_score_dto_1 = require("./dto/skill-score.dto");
+const get_user_decorator_1 = require("./auth/get-user.decorator");
+const assessment_owner_guard_1 = require("./auth/assessment-owner.guard");
+const student_guard_1 = require("./auth/student.guard");
+const response_wrapper_1 = require("./common/wrappers/response.wrapper");
+const legacy_response_interceptor_1 = require("./common/interceptors/legacy-response.interceptor");
+const response_helper_1 = require("./common/utils/response-helper");
 const messaging_service_1 = require("./messaging/messaging.service");
 const finish_session_dto_1 = require("./dto/finish-session.dto");
 let AssessmentController = AssessmentController_1 = class AssessmentController {
@@ -79,7 +78,7 @@ let AssessmentController = AssessmentController_1 = class AssessmentController {
             });
             return (0, response_helper_1.createHybridResponse)({
                 message: 'Answer submitted for processing',
-            }, true);
+            }, "Operation succeeded", true);
         }
         catch (error) {
             this.logger.error(`Error emitting assessment event: ${error.message}`, error.stack);
@@ -97,7 +96,7 @@ let AssessmentController = AssessmentController_1 = class AssessmentController {
             });
             return (0, response_helper_1.createHybridResponse)({
                 message: 'Session completion queued for processing',
-            }, true);
+            }, "Operation succeeded", true);
         }
         catch (error) {
             this.logger.error(`Error emitting finish session event: ${error.message}`, error.stack);
@@ -219,7 +218,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)(new common_1.ValidationPipe({ whitelist: true }))),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, typeof (_a = typeof start_assessment_dto_1.StartAssessmentDto !== "undefined" && start_assessment_dto_1.StartAssessmentDto) === "function" ? _a : Object]),
+    __metadata("design:paramtypes", [Object, start_assessment_dto_1.StartAssessmentDto]),
     __metadata("design:returntype", Promise)
 ], AssessmentController.prototype, "startAssessment", null);
 __decorate([
@@ -337,7 +336,8 @@ __decorate([
     __param(0, (0, get_user_decorator_1.GetUser)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_b = typeof user_entity_1.User !== "undefined" && user_entity_1.User) === "function" ? _b : Object, typeof (_c = typeof submit_answer_dto_1.SubmitAnswerDto !== "undefined" && submit_answer_dto_1.SubmitAnswerDto) === "function" ? _c : Object]),
+    __metadata("design:paramtypes", [user_entity_1.User,
+        submit_answer_dto_1.SubmitAnswerDto]),
     __metadata("design:returntype", Promise)
 ], AssessmentController.prototype, "submitAnswer", null);
 __decorate([
@@ -352,7 +352,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_d = typeof submit_answer_dto_1.SubmitAnswerDto !== "undefined" && submit_answer_dto_1.SubmitAnswerDto) === "function" ? _d : Object, Object]),
+    __metadata("design:paramtypes", [submit_answer_dto_1.SubmitAnswerDto, Object]),
     __metadata("design:returntype", Promise)
 ], AssessmentController.prototype, "submitAnswerAsync", null);
 __decorate([
@@ -473,7 +473,7 @@ __decorate([
     __param(0, (0, common_1.Param)('sessionId', new common_1.ParseUUIDPipe())),
     __param(1, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_e = typeof user_entity_1.User !== "undefined" && user_entity_1.User) === "function" ? _e : Object]),
+    __metadata("design:paramtypes", [String, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], AssessmentController.prototype, "getNextQuestion", null);
 __decorate([
@@ -574,7 +574,7 @@ __decorate([
     __param(0, (0, common_1.Param)('sessionId', new common_1.ParseUUIDPipe())),
     __param(1, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_f = typeof user_entity_1.User !== "undefined" && user_entity_1.User) === "function" ? _f : Object]),
+    __metadata("design:paramtypes", [String, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], AssessmentController.prototype, "getSessionResult", null);
 exports.AssessmentController = AssessmentController = AssessmentController_1 = __decorate([

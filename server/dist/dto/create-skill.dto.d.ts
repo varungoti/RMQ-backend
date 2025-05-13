@@ -1,4 +1,4 @@
-import { SkillStatus } from '../entities/skill.entity';
+import { SkillStatus } from 'src/entities/skill.entity';
 export declare class CreateSkillDto {
     name: string;
     subject: string;

@@ -1,10 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
-import { RecommendationFeedback, FeedbackType } from '../entities/recommendation_feedback.entity';
-import { RecommendationType } from '../dto/recommendation.dto';
-import { Skill } from '../entities/skill.entity';
-import * as natural from 'natural';
+import { RecommendationFeedback, FeedbackType } from 'src/entities/recommendation_feedback.entity';
+import { RecommendationType } from 'src/dto/recommendation.dto';
+import { Skill } from 'src/entities/skill.entity';
+import { WordTokenizer, TfIdf, PorterStemmer, SentimentAnalyzer } from './natural-compat';
+
+// Create compatibility variables
+const natural = { WordTokenizer, TfIdf, PorterStemmer, SentimentAnalyzer };
 
 interface FeedbackTrend {
   period: string;

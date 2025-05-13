@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import axios from 'axios';
-import { LlmProviderConfig, LlmProviderType, LlmResponse } from '../dto/llm-provider.dto';
+import { LlmProviderConfig, LlmProviderType, LlmResponse } from 'src/dto/llm-provider.dto';
 import { LlmCacheService } from './llm-cache.service'; 
 import { GeminiProviderService } from './gemini-provider.service';
 

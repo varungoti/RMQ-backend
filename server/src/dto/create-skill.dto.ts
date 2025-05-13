@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional, MaxLength, IsNumber, Min, Max, IsDate, IsEnum } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { SkillStatus } from '../entities/skill.entity';
+import { SkillStatus } from 'src/entities/skill.entity';
 
 export class CreateSkillDto {
   @ApiProperty({ description: 'Name of the skill', maxLength: 100, example: 'Algebraic Equations' })

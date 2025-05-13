@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
-import { MeterProvider } from '@opentelemetry/sdk-metrics';
+import { PrometheusExporter, MeterProvider } from './prom-client-compat';
 
 @Injectable()
 export class MonitoringConfig {

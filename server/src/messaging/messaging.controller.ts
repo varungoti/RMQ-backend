@@ -2,7 +2,7 @@ import { Controller, Logger, ValidationPipe } from '@nestjs/common';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AssessmentService } from '../assessment.service';
-import { SubmitAnswerDto } from '../dto/submit-answer.dto';
+import { SubmitAnswerDto } from 'src/dto/submit-answer.dto';
 import { ProcessAssessmentResponseDto } from './dto/process-assessment-response.dto';
 import { FinishAssessmentSessionDto } from './dto/finish-assessment-session.dto';
 import { AssessmentMessageResponseDto, AssessmentSessionResultDto } from './dto/assessment-message-response.dto';

@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTabl
 import { User } from './user.entity';
 import { Skill } from './skill.entity';
 import { RecommendationResource } from './recommendation_resource.entity';
-import { RecommendationType, RecommendationPriority } from '../dto/recommendation.dto';
+import { RecommendationType, RecommendationPriority } from 'src/dto/recommendation.dto';
 import { RecommendationFeedback } from './recommendation_feedback.entity';
 
 @Entity()

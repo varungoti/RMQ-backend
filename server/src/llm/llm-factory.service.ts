@@ -6,7 +6,7 @@ import { AnthropicProviderService } from './anthropic-provider.service';
 import { CohereProviderService } from './cohere-provider.service';
 import { LlmCacheService } from './llm-cache.service';
 import { LlmRedisCacheService } from './llm-redis-cache.service';
-import { LlmProviderConfig, LlmProviderType } from '../dto/llm-provider.dto';
+import { LlmProviderConfig, LlmProviderType } from 'src/dto/llm-provider.dto';
 import { ILlmCacheService } from './llm-provider.service';
 import { LlmProviderService } from './llm-provider.service';
 

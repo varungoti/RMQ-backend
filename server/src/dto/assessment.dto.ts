@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { QuestionType } from '../entities/question.entity'; // Assuming QuestionType enum exists
-import { Skill } from '../entities/skill.entity'; // Assuming Skill entity exists
+import { QuestionType } from 'src/entities/question.entity'; // Assuming QuestionType enum exists
+import { Skill } from 'src/entities/skill.entity'; // Assuming Skill entity exists
 import { GraphQLJSONObject } from 'graphql-type-json'; // For JSON object
 
 /**

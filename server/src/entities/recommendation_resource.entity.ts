@@ -8,7 +8,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Skill } from './skill.entity';
-import { RecommendationType } from '../dto/recommendation.dto';
+import { RecommendationType } from 'src/dto/recommendation.dto';
 
 @Entity()
 export class RecommendationResource {

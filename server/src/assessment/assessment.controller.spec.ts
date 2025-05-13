@@ -3,16 +3,16 @@ import { AssessmentController } from './assessment.controller';
 import { AssessmentService } from './assessment.service';
 import { Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { SubmitAnswerDto } from '../dto/submit-answer.dto';
-import { AssessmentResponseDto } from '../dto/assessment.dto';
-import { User } from '../entities/user.entity';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { AssessmentOwnerGuard } from '../auth/assessment-owner.guard';
-import { StudentGuard } from '../auth/student.guard';
+import { SubmitAnswerDto } from 'src/dto/submit-answer.dto';
+import { AssessmentResponseDto } from 'src/dto/assessment.dto';
+import { User } from 'src/entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AssessmentOwnerGuard } from 'src/auth/assessment-owner.guard';
+import { StudentGuard } from 'src/auth/student.guard';
 import { Repository } from 'typeorm';
-import { LegacyResponseInterceptor } from '../common/interceptors/legacy-response.interceptor';
+import { LegacyResponseInterceptor } from 'src/common/interceptors/legacy-response.interceptor';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { AssessmentSession } from '../entities/assessment_session.entity';
+import { AssessmentSession } from 'src/entities/assessment_session.entity';
 
 // Mock for Repository
 class MockRepository<T> {

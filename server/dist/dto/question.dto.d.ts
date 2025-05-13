@@ -1,4 +1,4 @@
-import { QuestionType, QuestionStatus } from '../entities/question.entity';
+import { QuestionType, QuestionStatus } from 'src/entities/question.entity';
 declare class QuestionBaseDto {
     questionText: string;
     questionType: QuestionType;

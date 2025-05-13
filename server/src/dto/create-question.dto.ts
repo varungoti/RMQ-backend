@@ -12,7 +12,7 @@ import {
   ValidateIf,
   IsUrl,
 } from 'class-validator';
-import { QuestionType, QuestionStatus } from '../entities/question.entity'; // Import the enums
+import { QuestionType, QuestionStatus } from 'src/entities/question.entity'; // Import the enums
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'; // Import Swagger decorators
 
 export class CreateQuestionDto {

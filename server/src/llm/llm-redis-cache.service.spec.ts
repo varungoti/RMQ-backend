@@ -4,7 +4,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { LlmRedisCacheService } from './llm-redis-cache.service';
 import { LlmCacheService } from './llm-cache.service'; // In-memory fallback
-import { LlmResponse } from '../dto/llm-provider.dto';
+import { LlmResponse } from 'src/dto/llm-provider.dto';
 
 // Mock the Cache (cache-manager) interface
 const mockCacheManager: jest.Mocked<Cache> = {

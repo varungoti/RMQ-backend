@@ -125,11 +125,21 @@ export function isHybridResponse(obj: unknown): obj is Record<string, unknown> &
  */
 export function createHybridResponse<T>(
   data: T | null, 
-  message: string = '', 
+  messageOrSuccess: string | boolean = '', 
   successOrProps: boolean | Record<string, any> = true
 ): any {
   // Determine the success value and additional properties
-  const success = typeof successOrProps === 'boolean' ? successOrProps : true;
+  // Handle both string|boolean messageOrSuccess parameter
+  let message = '';
+  let success = typeof successOrProps === 'boolean' ? successOrProps : true;
+  
+  // If messageOrSuccess is a boolean, use it as success and empty string as message
+  if (typeof messageOrSuccess === 'boolean') {
+    success = messageOrSuccess;
+  } else {
+    // Otherwise use it as message
+    message = messageOrSuccess;
+  }
   const additionalProps = typeof successOrProps === 'object' ? successOrProps : {};
   
   // Handle null or undefined data

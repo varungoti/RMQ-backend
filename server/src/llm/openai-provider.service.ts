@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { LlmProviderService } from './llm-provider.service';
-import { LlmProviderConfig, LlmProviderType, LlmResponse } from '../dto/llm-provider.dto';
+import { LlmProviderConfig, LlmProviderType, LlmResponse } from 'src/dto/llm-provider.dto';
 
 @Injectable()
 export class OpenAiProviderService extends LlmProviderService {

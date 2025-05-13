@@ -1500,7 +1500,11 @@ export class RecommendationsService {
         ? impactScores.reduce((a, b) => a + b, 0) / impactScores.length
         : 0,
       trends,
-      categoryAnalysis,
+      // Add confidenceScore to each category
+      categoryAnalysis: categoryAnalysis.map(category => ({
+        ...category,
+        confidenceScore: 0.85, // Default confidence score
+      })),
       resourceTypeAnalysis,
     };
   }

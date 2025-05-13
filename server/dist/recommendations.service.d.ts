@@ -12,6 +12,8 @@ import { ConfigService } from '@nestjs/config';
 import { AiRecommendationService } from './ai-recommendation.service';
 import { RedisService } from './redis.service';
 import { CreateRecommendationFeedbackDto } from './dto/recommendation-feedback.dto';
+import { FeedbackValidationService } from './services/feedback-validation.service';
+import { FeedbackAnalysisService } from './services/feedback-analysis.service';
 interface LlmError {
     code: string;
     message: string;
@@ -33,6 +35,8 @@ export declare class RecommendationsService {
     private readonly configService;
     private readonly aiRecommendationService;
     private readonly redisService;
+    private readonly feedbackValidation;
+    private readonly feedbackAnalysis;
     private readonly logger;
     private readonly SKILL_THRESHOLD_LOW;
     private readonly SKILL_THRESHOLD_CRITICAL;
@@ -44,7 +48,7 @@ export declare class RecommendationsService {
     private readonly AI_RETRY_ATTEMPTS;
     private readonly AI_RETRY_DELAY;
     private readonly AI_METRICS;
-    constructor(usersRepository: Repository<User>, skillsRepository: Repository<Skill>, scoresRepository: Repository<AssessmentSkillScore>, sessionsRepository: Repository<AssessmentSession>, responsesRepository: Repository<AssessmentResponse>, resourcesRepository: Repository<RecommendationResource>, historyRepository: Repository<RecommendationHistory>, feedbackRepository: Repository<RecommendationFeedback>, configService: ConfigService, aiRecommendationService: AiRecommendationService, redisService: RedisService);
+    constructor(usersRepository: Repository<User>, skillsRepository: Repository<Skill>, scoresRepository: Repository<AssessmentSkillScore>, sessionsRepository: Repository<AssessmentSession>, responsesRepository: Repository<AssessmentResponse>, resourcesRepository: Repository<RecommendationResource>, historyRepository: Repository<RecommendationHistory>, feedbackRepository: Repository<RecommendationFeedback>, configService: ConfigService, aiRecommendationService: AiRecommendationService, redisService: RedisService, feedbackValidation: FeedbackValidationService, feedbackAnalysis: FeedbackAnalysisService);
     getRecommendations(userId: string, queryParams?: RecommendationQueryDto): Promise<RecommendationSetDto>;
     private _getLatestSkillScores;
     private _identifySkillGaps;
@@ -106,6 +110,49 @@ export declare class RecommendationsService {
         totalFeedback: number;
         feedbackByType: Record<FeedbackType, number>;
         averageImpactScore: number;
+        trends: Array<{
+            period: string;
+            totalFeedback: number;
+            helpfulPercentage: number;
+            averageImpactScore: number;
+            mostCommonIssues: Array<{
+                issue: string;
+                count: number;
+            }>;
+        }>;
+        categoryAnalysis: Array<{
+            category: string;
+            categoryName: string;
+            totalFeedback: number;
+            helpfulPercentage: number;
+            averageImpactScore: number;
+            preferredResourceTypes: RecommendationType[];
+            commonIssues: Array<{
+                issue: string;
+                count: number;
+            }>;
+            confidenceScore: number;
+        }>;
+        resourceTypeAnalysis: Array<{
+            type: RecommendationType;
+            totalUsage: number;
+            helpfulPercentage: number;
+            averageImpactScore: number;
+            skillCategories: Array<{
+                category: string;
+                effectiveness: number;
+            }>;
+            trends: Array<{
+                period: string;
+                totalFeedback: number;
+                helpfulPercentage: number;
+                averageImpactScore: number;
+                mostCommonIssues: Array<{
+                    issue: string;
+                    count: number;
+                }>;
+            }>;
+        }>;
     }>;
 }
 export {};

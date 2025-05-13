@@ -8,22 +8,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var AiRecommendationService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AiRecommendationService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
 const llm_factory_service_1 = require("./llm/llm-factory.service");
 const recommendation_dto_1 = require("./dto/recommendation.dto");
 const ai_recommendation_dto_1 = require("./dto/ai-recommendation.dto");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const ai_metrics_service_1 = require("./metrics/ai-metrics.service");
+const recommendation_feedback_entity_1 = require("./entities/recommendation_feedback.entity");
 let AiRecommendationService = AiRecommendationService_1 = class AiRecommendationService {
-    constructor(configService, llmFactory, aiMetrics) {
+    constructor(configService, llmFactory, aiMetrics, feedbackRepository) {
         this.configService = configService;
         this.llmFactory = llmFactory;
         this.aiMetrics = aiMetrics;
+        this.feedbackRepository = feedbackRepository;
         this.logger = new common_1.Logger(AiRecommendationService_1.name);
         this.metrics = {
             validationErrors: [],
@@ -81,10 +88,12 @@ let AiRecommendationService = AiRecommendationService_1 = class AiRecommendation
             this.logger.error('Cannot generate AI recommendation: No enabled LLM provider found.');
             return null;
         }
+        const feedbackHistory = await this._getFeedbackHistory(userId, skill.id);
+        const feedbackInsights = this._analyzeFeedbackHistory(feedbackHistory);
         this.metrics.totalAttempts++;
         const startTime = Date.now();
         try {
-            const prompt = this._generatePrompt(userId, skill, score, assessmentHistory);
+            const prompt = this._generatePrompt(userId, skill, score, assessmentHistory, feedbackInsights);
             const systemPrompt = this._generateSystemPrompt();
             this.logger.debug(`Sending prompt to LLM for user ${userId}, skill ${skill.id}`);
             const llmResponse = await llmProvider.sendPromptWithCache(prompt, systemPrompt);
@@ -147,12 +156,19 @@ let AiRecommendationService = AiRecommendationService_1 = class AiRecommendation
         }
     }
     _generateSystemPrompt() {
-        return 'You are an educational AI advisor that creates personalized learning recommendations for students based on their performance data.';
+        return `You are an educational AI advisor that creates personalized learning recommendations for students based on their performance data and previous feedback on recommendations.`;
     }
-    _generatePrompt(userId, skill, score, assessmentHistory) {
+    _generatePrompt(userId, skill, score, assessmentHistory, feedbackInsights) {
         const historyText = assessmentHistory
             .map(h => `- Skill: ${h.skillId}, Correct: ${h.isCorrect}, Date: ${h.date.toISOString()}`)
             .join('\n');
+        const feedbackText = `
+      Based on previous feedback:
+      - Preferred resource types: ${feedbackInsights.preferredTypes.join(', ') || 'No clear preference'}
+      - Resource types to avoid: ${feedbackInsights.avoidedTypes.join(', ') || 'None'}
+      - Difficulty preference: ${feedbackInsights.difficultyPreference}
+      - Common issues: ${feedbackInsights.commonIssues.join(', ') || 'None identified'}
+    `;
         return `
       Generate a personalized learning recommendation for a student with the following:
       
@@ -164,8 +180,11 @@ let AiRecommendationService = AiRecommendationService_1 = class AiRecommendation
       
       Recent assessment history:
       ${historyText}
+
+      ${feedbackText}
       
       Create a personalized recommendation for this student to improve this skill.
+      Consider their feedback history to provide more effective recommendations.
       Respond ONLY with the JSON object, without any additional text or markdown formatting.
       The JSON object must have the following fields:
       {
@@ -234,12 +253,94 @@ let AiRecommendationService = AiRecommendationService_1 = class AiRecommendation
             response,
         });
     }
+    async _getFeedbackHistory(userId, skillId) {
+        return this.feedbackRepository.find({
+            where: {
+                userId,
+                recommendation: { skillId },
+            },
+            order: { createdAt: 'DESC' },
+            take: 10,
+        });
+    }
+    _analyzeFeedbackHistory(feedbackHistory) {
+        const typeFeedback = new Map();
+        let tooEasyCount = 0;
+        let tooDifficultCount = 0;
+        let appropriateCount = 0;
+        const issues = new Map();
+        feedbackHistory.forEach(feedback => {
+            const resourceType = feedback.metadata?.resourceType;
+            if (resourceType) {
+                if (!typeFeedback.has(resourceType)) {
+                    typeFeedback.set(resourceType, { helpful: 0, notHelpful: 0 });
+                }
+                const stats = typeFeedback.get(resourceType);
+                if (feedback.feedbackType === recommendation_feedback_entity_1.FeedbackType.HELPFUL) {
+                    stats.helpful++;
+                }
+                else if (feedback.feedbackType === recommendation_feedback_entity_1.FeedbackType.NOT_HELPFUL) {
+                    stats.notHelpful++;
+                }
+            }
+            switch (feedback.feedbackType) {
+                case recommendation_feedback_entity_1.FeedbackType.TOO_EASY:
+                    tooEasyCount++;
+                    break;
+                case recommendation_feedback_entity_1.FeedbackType.TOO_DIFFICULT:
+                    tooDifficultCount++;
+                    break;
+                case recommendation_feedback_entity_1.FeedbackType.HELPFUL:
+                    appropriateCount++;
+                    break;
+            }
+            if (feedback.comment) {
+                issues.set(feedback.comment, (issues.get(feedback.comment) || 0) + 1);
+            }
+        });
+        const preferredTypes = [];
+        const avoidedTypes = [];
+        typeFeedback.forEach((stats, type) => {
+            const totalFeedback = stats.helpful + stats.notHelpful;
+            if (totalFeedback >= 2) {
+                const helpfulRate = stats.helpful / totalFeedback;
+                if (helpfulRate >= 0.7) {
+                    preferredTypes.push(type);
+                }
+                else if (helpfulRate <= 0.3) {
+                    avoidedTypes.push(type);
+                }
+            }
+        });
+        let difficultyPreference = 'appropriate';
+        const totalDifficultyFeedback = tooEasyCount + tooDifficultCount + appropriateCount;
+        if (totalDifficultyFeedback > 0) {
+            if (tooEasyCount / totalDifficultyFeedback > 0.5) {
+                difficultyPreference = 'harder';
+            }
+            else if (tooDifficultCount / totalDifficultyFeedback > 0.5) {
+                difficultyPreference = 'easier';
+            }
+        }
+        const commonIssues = Array.from(issues.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([issue]) => issue);
+        return {
+            preferredTypes,
+            avoidedTypes,
+            difficultyPreference,
+            commonIssues,
+        };
+    }
 };
 exports.AiRecommendationService = AiRecommendationService;
 exports.AiRecommendationService = AiRecommendationService = AiRecommendationService_1 = __decorate([
     (0, common_1.Injectable)(),
+    __param(3, (0, typeorm_1.InjectRepository)(recommendation_feedback_entity_1.RecommendationFeedback)),
     __metadata("design:paramtypes", [config_1.ConfigService,
         llm_factory_service_1.LlmFactoryService,
-        ai_metrics_service_1.AiMetricsService])
+        ai_metrics_service_1.AiMetricsService,
+        typeorm_2.Repository])
 ], AiRecommendationService);
 //# sourceMappingURL=ai-recommendation.service.js.map

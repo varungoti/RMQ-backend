@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { LlmResponse } from '../dto/llm-provider.dto';
+import { LlmResponse } from 'src/dto/llm-provider.dto';
 import { ILlmCacheService } from './llm-provider.service';
 interface CacheMetrics {
     hits: number;

@@ -9,7 +9,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AssessmentSession } from '../entities/assessment_session.entity';
+import { AssessmentSession } from 'src/entities/assessment_session.entity';
 
 @Injectable()
 export class AssessmentOwnerGuard implements CanActivate {

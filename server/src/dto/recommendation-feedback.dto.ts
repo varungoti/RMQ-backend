@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
-import { FeedbackType, FeedbackSource } from '../entities/recommendation_feedback.entity';
+import { FeedbackType, FeedbackSource } from 'src/entities/recommendation_feedback.entity';
 
 export class CreateRecommendationFeedbackDto {
   @ApiProperty({

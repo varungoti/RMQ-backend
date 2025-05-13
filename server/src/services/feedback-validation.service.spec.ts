@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FeedbackValidationService } from './feedback-validation.service';
-import { CreateRecommendationFeedbackDto } from '../dto/recommendation-feedback.dto';
-import { FeedbackType, FeedbackSource } from '../entities/recommendation_feedback.entity';
-import { RecommendationType } from '../dto/recommendation.dto';
+import { CreateRecommendationFeedbackDto } from 'src/dto/recommendation-feedback.dto';
+import { FeedbackType, FeedbackSource } from 'src/entities/recommendation_feedback.entity';
+import { RecommendationType } from 'src/dto/recommendation.dto';
 
 describe('FeedbackValidationService', () => {
   let service: FeedbackValidationService;

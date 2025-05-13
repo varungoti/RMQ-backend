@@ -13,7 +13,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { QuestionType, QuestionStatus } from '../entities/question.entity';
+import { QuestionType, QuestionStatus } from 'src/entities/question.entity';
 import { GraphQLJSONObject } from 'graphql-type-json'; // For options
 
 // Base DTO for common properties

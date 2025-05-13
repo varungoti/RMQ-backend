@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FeedbackAnalysisService } from './feedback-analysis.service';
-import { RecommendationFeedback, FeedbackType, FeedbackSource } from '../entities/recommendation_feedback.entity';
-import { Skill } from '../entities/skill.entity';
-import { RecommendationType, RecommendationPriority } from '../dto/recommendation.dto';
-import { User, UserRole } from '../entities/user.entity';
-import { Recommendation } from '../entities/recommendation.entity';
+import { RecommendationFeedback, FeedbackType, FeedbackSource } from 'src/entities/recommendation_feedback.entity';
+import { Skill } from 'src/entities/skill.entity';
+import { RecommendationType, RecommendationPriority } from 'src/dto/recommendation.dto';
+import { User, UserRole } from 'src/entities/user.entity';
+import { Recommendation } from 'src/entities/recommendation.entity';
 
 describe('FeedbackAnalysisService', () => {
   let service: FeedbackAnalysisService;

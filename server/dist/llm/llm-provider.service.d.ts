@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { LlmProviderConfig, LlmResponse } from '../dto/llm-provider.dto';
+import { LlmProviderConfig, LlmResponse } from 'src/dto/llm-provider.dto';
 export interface ILlmCacheService {
     get(prompt: string, systemPrompt: string | undefined, provider: string, model: string): Promise<LlmResponse | null> | LlmResponse | null;
     set(prompt: string, systemPrompt: string | undefined, provider: string, model: string, response: LlmResponse): Promise<void> | void;

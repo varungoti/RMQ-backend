@@ -1,5 +1,5 @@
 import { Skill } from './skill.entity';
-import { RecommendationType } from '../dto/recommendation.dto';
+import { RecommendationType } from 'src/dto/recommendation.dto';
 export declare class RecommendationResource {
     id: string;
     title: string;

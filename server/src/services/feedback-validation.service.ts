@@ -1,8 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateRecommendationFeedbackDto } from '../dto/recommendation-feedback.dto';
-import { FeedbackType } from '../entities/recommendation_feedback.entity';
-import { RecommendationType } from '../dto/recommendation.dto';
-import * as natural from 'natural';
+import { CreateRecommendationFeedbackDto } from 'src/dto/recommendation-feedback.dto';
+import { FeedbackType } from 'src/entities/recommendation_feedback.entity';
+import { RecommendationType } from 'src/dto/recommendation.dto';
+import { WordTokenizer, TfIdf, PorterStemmer, SentimentAnalyzer } from './natural-compat';
+
+// Create compatibility variables
+const natural = { WordTokenizer, TfIdf, PorterStemmer, SentimentAnalyzer };
 
 /**
  * Represents the priority score and its contributing factors for a piece of feedback.

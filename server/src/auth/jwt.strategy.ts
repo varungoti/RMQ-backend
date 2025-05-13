@@ -5,7 +5,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users.service'; // Adjusted path
-import { User, UserRole } from '../entities/user.entity'; // Adjusted path
+import { User, UserRole } from 'src/entities/user.entity'; // Adjusted path
 
 // Define the expected payload structure
 interface JwtPayload {

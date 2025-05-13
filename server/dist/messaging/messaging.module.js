@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessagingModule = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
 const microservices_1 = require("@nestjs/microservices");
 const messaging_service_1 = require("./messaging.service");
 const messaging_controller_1 = require("./messaging.controller");
@@ -19,21 +18,34 @@ exports.MessagingModule = MessagingModule;
 exports.MessagingModule = MessagingModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            microservices_1.ClientsModule.registerAsync([
+            microservices_1.ClientsModule.register([
                 {
-                    name: 'RABBITMQ_CLIENT',
-                    imports: [config_1.ConfigModule],
-                    useFactory: (configService) => ({
-                        transport: microservices_1.Transport.RMQ,
-                        options: {
-                            urls: [configService.get('RABBITMQ_URL') || 'amqp://rmquser:rmqpassword@localhost:5672'],
-                            queue: 'assessment_queue',
-                            queueOptions: {
-                                durable: true,
+                    name: 'RABBITMQ_SERVICE',
+                    transport: microservices_1.Transport.RMQ,
+                    options: {
+                        urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
+                        queue: 'assessment_queue',
+                        queueOptions: {
+                            durable: true,
+                            arguments: {
+                                'x-dead-letter-exchange': 'assessment_dlx',
+                                'x-dead-letter-routing-key': 'assessment.dead-letter',
                             },
                         },
-                    }),
-                    inject: [config_1.ConfigService],
+                        prefetchCount: 1,
+                    },
+                },
+                {
+                    name: 'DEAD_LETTER_SERVICE',
+                    transport: microservices_1.Transport.RMQ,
+                    options: {
+                        urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
+                        queue: 'assessment_dead_letter',
+                        queueOptions: {
+                            durable: true,
+                        },
+                        prefetchCount: 1,
+                    },
                 },
             ]),
             assessment_module_1.AssessmentModule,

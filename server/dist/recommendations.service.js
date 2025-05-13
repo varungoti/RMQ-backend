@@ -29,8 +29,10 @@ const recommendation_dto_1 = require("./dto/recommendation.dto");
 const config_1 = require("@nestjs/config");
 const ai_recommendation_service_1 = require("./ai-recommendation.service");
 const redis_service_1 = require("./redis.service");
+const feedback_validation_service_1 = require("./services/feedback-validation.service");
+const feedback_analysis_service_1 = require("./services/feedback-analysis.service");
 let RecommendationsService = RecommendationsService_1 = class RecommendationsService {
-    constructor(usersRepository, skillsRepository, scoresRepository, sessionsRepository, responsesRepository, resourcesRepository, historyRepository, feedbackRepository, configService, aiRecommendationService, redisService) {
+    constructor(usersRepository, skillsRepository, scoresRepository, sessionsRepository, responsesRepository, resourcesRepository, historyRepository, feedbackRepository, configService, aiRecommendationService, redisService, feedbackValidation, feedbackAnalysis) {
         this.usersRepository = usersRepository;
         this.skillsRepository = skillsRepository;
         this.scoresRepository = scoresRepository;
@@ -42,6 +44,8 @@ let RecommendationsService = RecommendationsService_1 = class RecommendationsSer
         this.configService = configService;
         this.aiRecommendationService = aiRecommendationService;
         this.redisService = redisService;
+        this.feedbackValidation = feedbackValidation;
+        this.feedbackAnalysis = feedbackAnalysis;
         this.logger = new common_1.Logger(RecommendationsService_1.name);
         this.SKILL_THRESHOLD_LOW = 550;
         this.SKILL_THRESHOLD_CRITICAL = 450;
@@ -926,15 +930,19 @@ let RecommendationsService = RecommendationsService_1 = class RecommendationsSer
         if (!recommendation) {
             throw new common_1.NotFoundException('Recommendation not found');
         }
+        const { isValid, sanitized, issues } = this.feedbackValidation.validateAndSanitize(feedbackDto);
+        if (!isValid) {
+            this.logger.warn(`Invalid feedback received: ${issues.join(', ')}`);
+        }
         const feedback = this.feedbackRepository.create({
             userId,
             recommendationId,
-            ...feedbackDto,
+            ...sanitized,
         });
-        if (feedbackDto.feedbackType === recommendation_feedback_entity_1.FeedbackType.HELPFUL) {
+        if (sanitized.feedbackType === recommendation_feedback_entity_1.FeedbackType.HELPFUL) {
             recommendation.wasHelpful = true;
         }
-        else if (feedbackDto.feedbackType === recommendation_feedback_entity_1.FeedbackType.NOT_HELPFUL) {
+        else if (sanitized.feedbackType === recommendation_feedback_entity_1.FeedbackType.NOT_HELPFUL) {
             recommendation.wasHelpful = false;
         }
         await this.historyRepository.save(recommendation);
@@ -963,12 +971,23 @@ let RecommendationsService = RecommendationsService_1 = class RecommendationsSer
         const impactScores = feedback
             .filter(f => f.impactScore !== null)
             .map(f => f.impactScore);
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 90);
+        const trends = await this.feedbackAnalysis.analyzeTrends(startDate, new Date(), 'week');
+        const categoryAnalysis = await this.feedbackAnalysis.analyzeBySkillCategory();
+        const resourceTypeAnalysis = await this.feedbackAnalysis.analyzeResourceTypes(90);
         return {
             totalFeedback: feedback.length,
             feedbackByType,
             averageImpactScore: impactScores.length > 0
                 ? impactScores.reduce((a, b) => a + b, 0) / impactScores.length
                 : 0,
+            trends,
+            categoryAnalysis: categoryAnalysis.map(category => ({
+                ...category,
+                confidenceScore: 0.85,
+            })),
+            resourceTypeAnalysis,
         };
     }
 };
@@ -993,6 +1012,8 @@ exports.RecommendationsService = RecommendationsService = RecommendationsService
         typeorm_2.Repository,
         config_1.ConfigService,
         ai_recommendation_service_1.AiRecommendationService,
-        redis_service_1.RedisService])
+        redis_service_1.RedisService,
+        feedback_validation_service_1.FeedbackValidationService,
+        feedback_analysis_service_1.FeedbackAnalysisService])
 ], RecommendationsService);
 //# sourceMappingURL=recommendations.service.js.map

@@ -13,12 +13,12 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from '../users.service';
-import { CreateUserDto } from '../dto/create-user.dto'; // Assuming DTO path
-import { UpdateUserDto } from '../dto/update-user.dto'; // Assuming DTO path (needs creation)
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // Adjust path as needed
+import { CreateUserDto } from 'src/dto/create-user.dto'; // Assuming DTO path
+import { UpdateUserDto } from 'src/dto/update-user.dto'; // Assuming DTO path (needs creation)
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'; // Adjust path as needed
 import { RolesGuard } from '../guards/roles.guard'; // Adjust path as needed
 import { Roles } from '../decorators/roles.decorator'; // Adjust path as needed
-import { UserRole, User } from '../entities/user.entity'; // Import User entity
+import { UserRole, User } from 'src/entities/user.entity'; // Import User entity
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 
 // Note: This controller currently only handles Admin operations.

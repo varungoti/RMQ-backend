@@ -127,6 +127,6 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'When the feedback was last updated',
     }),
-    __metadata("design:type", Object)
-], RecommendationFeedbackResponseDto.prototype, "", void 0);
+    __metadata("design:type", Date)
+], RecommendationFeedbackResponseDto.prototype, "updatedAt", void 0);
 //# sourceMappingURL=recommendation-feedback.dto.js.map

@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { LlmCacheService } from './llm-cache.service';
 import { LlmRedisCacheService } from './llm-redis-cache.service';
-import { LlmProviderConfig, LlmProviderType } from '../dto/llm-provider.dto';
+import { LlmProviderConfig, LlmProviderType } from 'src/dto/llm-provider.dto';
 import { LlmProviderService } from './llm-provider.service';
 export declare class LlmFactoryService {
     private configService;

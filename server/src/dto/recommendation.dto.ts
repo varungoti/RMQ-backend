@@ -2,8 +2,8 @@ import { IsUUID, IsOptional, IsNumber, Min, Max, IsString, IsEnum, IsArray, IsUr
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LlmProviderType } from './llm-provider.dto'; // Assuming path
-import { Question } from '../entities/question.entity'; // For QuestionPublic
-import { Skill } from '../entities/skill.entity'; // For Skill ID in CreateResourceRequest
+import { Question } from 'src/entities/question.entity'; // For QuestionPublic
+import { Skill } from 'src/entities/skill.entity'; // For Skill ID in CreateResourceRequest
 
 /**
  * Defines the recommendation type/category

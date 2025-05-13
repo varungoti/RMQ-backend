@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { LlmCacheService } from './llm-cache.service';
-import { LlmResponse } from '../dto/llm-provider.dto';
+import { LlmResponse } from 'src/dto/llm-provider.dto';
 
 // Mock ConfigService
 const mockConfigService = {

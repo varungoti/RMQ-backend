@@ -1,14 +1,14 @@
 import { Repository, DataSource } from 'typeorm';
-import { AssessmentSession } from '../entities/assessment_session.entity';
-import { AssessmentResponse } from '../entities/assessment_response.entity';
-import { Question } from '../entities/question.entity';
-import { Skill } from '../entities/skill.entity';
-import { AssessmentSkillScore } from '../entities/assessment_skill_score.entity';
-import { SubmitAnswerDto } from '../dto/submit-answer.dto';
-import { StartAssessmentDto } from '../dto/start-assessment.dto';
-import { User } from '../entities/user.entity';
-import { GetNextQuestionResponseDto, AssessmentResponseDto } from '../dto/assessment.dto';
-import { SkillScoreDto } from '../dto/skill-score.dto';
+import { AssessmentSession } from 'src/entities/assessment_session.entity';
+import { AssessmentResponse } from 'src/entities/assessment_response.entity';
+import { Question } from 'src/entities/question.entity';
+import { Skill } from 'src/entities/skill.entity';
+import { AssessmentSkillScore } from 'src/entities/assessment_skill_score.entity';
+import { SubmitAnswerDto } from 'src/dto/submit-answer.dto';
+import { StartAssessmentDto } from 'src/dto/start-assessment.dto';
+import { User } from 'src/entities/user.entity';
+import { GetNextQuestionResponseDto, AssessmentResponseDto } from 'src/dto/assessment.dto';
+import { SkillScoreDto } from 'src/dto/skill-score.dto';
 import { AnswerCheckerFactory } from './factories/answer-checker.factory';
 export declare class AssessmentService {
     private sessionRepository;

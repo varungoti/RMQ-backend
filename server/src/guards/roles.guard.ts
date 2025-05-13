@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from '../entities/user.entity'; // Adjust path as needed
+import { UserRole } from 'src/entities/user.entity'; // Adjust path as needed
 import { ROLES_KEY } from '../decorators/roles.decorator'; // Adjust path as needed
 
 // Define a type for the user object expected on the request

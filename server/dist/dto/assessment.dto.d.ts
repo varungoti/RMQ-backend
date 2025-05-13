@@ -1,5 +1,5 @@
-import { QuestionType } from '../entities/question.entity';
-import { Skill } from '../entities/skill.entity';
+import { QuestionType } from 'src/entities/question.entity';
+import { Skill } from 'src/entities/skill.entity';
 export declare class QuestionPublicDto {
     id: string;
     questionText: string;

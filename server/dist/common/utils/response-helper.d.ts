@@ -9,4 +9,4 @@ export interface HybridResponseProps {
     [key: string]: any;
 }
 export declare function isHybridResponse(obj: unknown): obj is Record<string, unknown> & HybridResponseProps;
-export declare function createHybridResponse<T>(data: T | null, message?: string, successOrProps?: boolean | Record<string, any>): any;
+export declare function createHybridResponse<T>(data: T | null, messageOrSuccess?: string | boolean, successOrProps?: boolean | Record<string, any>): any;

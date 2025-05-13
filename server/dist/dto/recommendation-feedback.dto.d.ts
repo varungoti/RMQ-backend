@@ -1,4 +1,4 @@
-import { FeedbackType, FeedbackSource } from '../entities/recommendation_feedback.entity';
+import { FeedbackType, FeedbackSource } from 'src/entities/recommendation_feedback.entity';
 export declare class CreateRecommendationFeedbackDto {
     feedbackType: FeedbackType;
     source?: FeedbackSource;
@@ -16,5 +16,5 @@ export declare class RecommendationFeedbackResponseDto {
     impactScore?: number;
     metadata?: Record<string, any>;
     createdAt: Date;
-    : any;
+    updatedAt: Date;
 }

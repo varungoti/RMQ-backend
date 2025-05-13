@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LlmResponse } from '../dto/llm-provider.dto';
+import { LlmResponse } from 'src/dto/llm-provider.dto';
 import * as crypto from 'crypto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject } from '@nestjs/common';

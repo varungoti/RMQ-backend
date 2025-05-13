@@ -4,7 +4,7 @@ import { LlmFactoryService } from './llm-factory.service';
 import { LlmCacheService } from './llm-cache.service';
 import { LlmRedisCacheService } from './llm-redis-cache.service';
 import { LlmProviderService } from './llm-provider.service';
-import { LlmProviderType } from '../dto/llm-provider.dto';
+import { LlmProviderType } from 'src/dto/llm-provider.dto';
 import { OpenAiProviderService } from './openai-provider.service';
 import { GeminiProviderService } from './gemini-provider.service';
 import { AnthropicProviderService } from './anthropic-provider.service';

@@ -1,5 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { UserRole } from '../entities/user.entity';
+import { UserRole } from 'src/entities/user.entity';
 
 @Injectable()
 export class StudentGuard implements CanActivate {

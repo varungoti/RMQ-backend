@@ -9,7 +9,7 @@ import {
 import { User } from './user.entity';
 import { Skill } from './skill.entity';
 import { RecommendationResource } from './recommendation_resource.entity';
-import { RecommendationPriority } from '../dto/recommendation.dto';
+import { RecommendationPriority } from 'src/dto/recommendation.dto';
 
 @Entity()
 export class RecommendationHistory {

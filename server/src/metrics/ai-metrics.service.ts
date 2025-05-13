@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RedisService } from '../redis.service';
-import { RecommendationFeedback, FeedbackType } from '../entities/recommendation_feedback.entity';
-import { RecommendationType } from '../dto/recommendation.dto';
+import { RecommendationFeedback, FeedbackType } from 'src/entities/recommendation_feedback.entity';
+import { RecommendationType } from 'src/dto/recommendation.dto';
 
 interface AiPerformanceMetrics {
   totalRequests: number;

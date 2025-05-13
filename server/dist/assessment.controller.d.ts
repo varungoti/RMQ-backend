@@ -1,12 +1,12 @@
 import { AssessmentService } from './assessment.service';
-import { StartAssessmentDto } from '../dto/start-assessment.dto';
-import { SubmitAnswerDto } from '../dto/submit-answer.dto';
-import { AssessmentSession } from '../entities/assessment_session.entity';
-import { User } from '../entities/user.entity';
-import { GetNextQuestionResponseDto, AssessmentResponseDto } from '../dto/assessment.dto';
-import { SkillScoreDto } from '../dto/skill-score.dto';
+import { StartAssessmentDto } from 'src/dto/start-assessment.dto';
+import { SubmitAnswerDto } from 'src/dto/submit-answer.dto';
+import { AssessmentSession } from 'src/entities/assessment_session.entity';
+import { User } from 'src/entities/user.entity';
+import { GetNextQuestionResponseDto, AssessmentResponseDto } from 'src/dto/assessment.dto';
+import { SkillScoreDto } from 'src/dto/skill-score.dto';
 import { Request as ExpressRequest } from 'express';
-import { ResponseWrapper } from '../common/wrappers/response.wrapper';
+import { ResponseWrapper } from 'src/common/wrappers/response.wrapper';
 import { MessagingService } from './messaging/messaging.service';
 import { FinishSessionDto } from './dto/finish-session.dto';
 export declare class AssessmentController {
