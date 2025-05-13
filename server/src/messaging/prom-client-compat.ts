@@ -53,7 +53,7 @@ class Registry {
   }
 }
 
-// Export a mock promClient object
+// Create internal promClient object
 const promClient = {
   Counter,
   Histogram,
