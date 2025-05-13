@@ -1,0 +1,11 @@
+{
+  "watch": ["dist"],
+  "ext": "js",
+  "ignore": [],
+  "delay": 2000,
+  "exec": "node --inspect=9230 dist/src/main.js",
+  "verbose": true,
+  "env": {
+    "NODE_ENV": "development"
+  }
+} 

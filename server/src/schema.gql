@@ -1,0 +1,135 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AssessmentResponse {
+  answeredAt: DateTime!
+  assessmentSession: AssessmentSession!
+  id: ID!
+  isCorrect: Boolean!
+  question: Question!
+  responseTimeMs: Int
+  userResponse: String!
+}
+
+type AssessmentSession {
+  completedAt: DateTime
+  id: ID!
+  overallLevel: Int
+  overallScore: Float
+  questionIds: [String!]!
+  responses: [AssessmentResponse]
+  skill: Skill!
+  startedAt: DateTime!
+  status: AssessmentStatus!
+  user: User!
+}
+
+type AssessmentSkillScore {
+  id: ID!
+  lastAssessedAt: DateTime!
+  level: Int
+  questionsAttempted: Int!
+  score: Float!
+  skill: Skill!
+  user: User!
+}
+
+enum AssessmentStatus {
+  CANCELLED
+  COMPLETED
+  IN_PROGRESS
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+type Query {
+  hello: String!
+}
+
+type Question {
+  correctAnswer: String!
+  createdAt: DateTime!
+  difficultyLevel: Int
+  gradeLevel: Int!
+  id: ID!
+  imageUrl: String
+  options: JSONObject
+  primarySkill: Skill!
+  questionText: String!
+  questionType: QuestionType!
+  status: QuestionStatus!
+  updatedAt: DateTime!
+}
+
+enum QuestionStatus {
+  ACTIVE
+  DRAFT
+  RETIRED
+}
+
+enum QuestionType {
+  ESSAY
+  FILL_IN_THE_BLANK
+  GRAPHICAL
+  LONG_ANSWER
+  MATCH_THE_FOLLOWING
+  MCQ
+  MULTIPLE_SELECT
+  NUMERICAL
+  PROBLEM_SOLVING
+  SHORT_ANSWER
+  TRUE_FALSE
+}
+
+type Skill {
+  category: String
+  createdAt: DateTime!
+  description: String
+  gradeLevel: Int!
+  id: ID!
+  imageUrl: String
+  isPrimary: Boolean!
+  isSecondary: Boolean!
+  name: String!
+  primarySkills: [Skill]
+  questions: [Question]
+  secondarySkills: [Skill]
+  skillScores: [AssessmentSkillScore]
+  status: SkillStatus!
+  subject: String!
+  updatedAt: DateTime!
+}
+
+"""The status of a skill (active or inactive)"""
+enum SkillStatus {
+  ACTIVE
+  INACTIVE
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  firstName: String
+  gradeLevel: Int!
+  id: ID!
+  lastName: String
+  role: UserRole!
+  updatedAt: DateTime!
+}
+
+"""The role of the user within the platform"""
+enum UserRole {
+  ADMIN
+  PARENT
+  STUDENT
+  TEACHER
+}

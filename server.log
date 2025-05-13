@@ -1,0 +1,16 @@
+
+> server@0.0.1 start:dev C:\Users\varun\Projects\RMQ\server
+> tsc && npx concurrently --kill-others "pnpm:watch:ts" "sleep 2 && pnpm:watch:node"
+
+[1] 'sleep' is not recognized as an internal or external command,
+[1] operable program or batch file.
+[1] sleep 2 && pnpm:watch:node exited with code 1
+--> Sending SIGTERM to other processes..
+[watch:ts] 
+[watch:ts] > server@0.0.1 watch:ts C:\Users\varun\Projects\RMQ\server
+[watch:ts] > tsc -w
+[watch:ts] 
+[watch:ts] pnpm run watch:ts exited with code 1
+C:\Users\varun\Projects\RMQ\server:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  server@0.0.1 start:dev: `tsc && npx concurrently --kill-others "pnpm:watch:ts" "sleep 2 && pnpm:watch:node"`
+Exit status 1

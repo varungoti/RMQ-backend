@@ -1,0 +1,114 @@
+services:
+  # PostgreSQL Database Service
+  db:
+    image: postgres:16-alpine
+    container_name: rmq_db
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-rmquser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-rmqpassword}
+      POSTGRES_DB: ${DB_DATABASE:-rmqdb}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-rmquser} -d ${DB_DATABASE:-rmqdb}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rmq_network
+
+  # RabbitMQ Message Broker Service
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rmq_rabbitmq
+    restart: unless-stopped
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-rmquser}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-rmqpassword}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rmq_network
+
+  # Redis Cache Service
+  redis:
+    image: redis:7-alpine
+    container_name: rmq_redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rmq_network
+
+  # NestJS Backend Service
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: rmq_server
+    restart: unless-stopped
+    env_file:
+      - ./.env 
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "${SERVER_PORT:-3002}:${PORT:-3002}" 
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3002}
+      DATABASE_URL: postgresql://${DB_USERNAME:-rmquser}:${DB_PASSWORD:-rmqpassword}@db:5432/${DB_DATABASE:-rmqdb}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET} 
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      REDIS_CACHE_ENABLED: ${REDIS_CACHE_ENABLED:-true}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-rmquser}:${RABBITMQ_PASS:-rmqpassword}@rabbitmq:5672/${RABBITMQ_VHOST:-/}
+      LLM_CACHE_ENABLED: ${LLM_CACHE_ENABLED:-true}
+      # Add LLM provider credentials as needed
+      # GEMINI_API_KEY: ${GEMINI_API_KEY}
+      # OPENAI_API_KEY: ${OPENAI_API_KEY}
+      # ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      # COHERE_API_KEY: ${COHERE_API_KEY}
+    networks:
+      - rmq_network
+    # Optional: Mount logs volume for easier debugging
+    volumes:
+      - ./server/logs:/usr/src/app/logs
+
+networks:
+  rmq_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local 

@@ -1,0 +1,18 @@
+.git
+dist
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vscode
+.idea
+*.md
+
+# Test files (optional, can be excluded)
+# test
+# coverage
+
+# Docker files (don't copy themselves)
+Dockerfile
+.dockerignore
+docker-compose.yml 

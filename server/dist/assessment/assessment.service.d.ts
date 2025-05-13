@@ -1,0 +1,42 @@
+import { Repository, DataSource } from 'typeorm';
+import { AssessmentSession } from '../entities/assessment_session.entity';
+import { AssessmentResponse } from '../entities/assessment_response.entity';
+import { Question } from '../entities/question.entity';
+import { Skill } from '../entities/skill.entity';
+import { AssessmentSkillScore } from '../entities/assessment_skill_score.entity';
+import { SubmitAnswerDto } from '../dto/submit-answer.dto';
+import { StartAssessmentDto } from '../dto/start-assessment.dto';
+import { User } from '../entities/user.entity';
+import { GetNextQuestionResponseDto, AssessmentResponseDto } from '../dto/assessment.dto';
+import { SkillScoreDto } from '../dto/skill-score.dto';
+import { AnswerCheckerFactory } from './factories/answer-checker.factory';
+export declare class AssessmentService {
+    private sessionRepository;
+    private responseRepository;
+    private questionRepository;
+    private skillRepository;
+    private scoreRepository;
+    private dataSource;
+    private userRepository;
+    private answerCheckerFactory;
+    private readonly logger;
+    constructor(sessionRepository: Repository<AssessmentSession>, responseRepository: Repository<AssessmentResponse>, questionRepository: Repository<Question>, skillRepository: Repository<Skill>, scoreRepository: Repository<AssessmentSkillScore>, dataSource: DataSource, userRepository: Repository<User>, answerCheckerFactory: AnswerCheckerFactory);
+    submitAnswer(userId: string, submitAnswerDto: SubmitAnswerDto): Promise<AssessmentResponseDto>;
+    private validateSessionAndOwnership;
+    validateQuestionForSession(session: AssessmentSession, questionId: string): Promise<Question>;
+    private createResponseEntity;
+    private processSubmissionWithTransaction;
+    private updateSessionStatusIfComplete;
+    private mapToResponseDto;
+    private checkAnswer;
+    private _updateSkillScoreTransactional;
+    startAssessment(userId: string, startAssessmentDto: StartAssessmentDto): Promise<AssessmentSession>;
+    getNextQuestion(userId: string, sessionId: string): Promise<GetNextQuestionResponseDto>;
+    calculateOverallScore(sessionId: string): Promise<{
+        score: number;
+        level: number;
+    }>;
+    private determineLevel;
+    updateSkillScore(userId: string, skillId: string, score: number, level: number): Promise<AssessmentSkillScore>;
+    getSessionResult(userId: string, sessionId: string): Promise<SkillScoreDto>;
+}

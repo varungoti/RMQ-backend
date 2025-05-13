@@ -1,0 +1,42 @@
+import { Repository, DataSource } from 'typeorm';
+import { AssessmentSession } from './entities/assessment_session.entity';
+import { AssessmentResponse } from './entities/assessment_response.entity';
+import { AssessmentSkillScore } from './entities/assessment_skill_score.entity';
+import { Question } from './entities/question.entity';
+import { User } from './entities/user.entity';
+import { Skill } from './entities/skill.entity';
+import { StartAssessmentDto } from './dto/start-assessment.dto';
+import { SubmitAnswerDto } from './dto/submit-answer.dto';
+import { GetNextQuestionResponseDto, AssessmentResponseDto } from './dto/assessment.dto';
+import { SkillScoreDto } from './dto/skill-score.dto';
+import { Cache } from 'cache-manager';
+export declare class AssessmentService {
+    private dataSource;
+    private sessionsRepository;
+    private responsesRepository;
+    private scoresRepository;
+    private questionsRepository;
+    private usersRepository;
+    private skillsRepository;
+    private cacheManager;
+    private readonly logger;
+    constructor(dataSource: DataSource, sessionsRepository: Repository<AssessmentSession>, responsesRepository: Repository<AssessmentResponse>, scoresRepository: Repository<AssessmentSkillScore>, questionsRepository: Repository<Question>, usersRepository: Repository<User>, skillsRepository: Repository<Skill>, cacheManager: Cache);
+    startSession(userId: string, startAssessmentDto: StartAssessmentDto): Promise<AssessmentSession>;
+    private _shuffleArray;
+    getNextQuestion(userId: string, sessionId: string): Promise<GetNextQuestionResponseDto>;
+    getSessionResult(userId: string, sessionId: string): Promise<SkillScoreDto>;
+    submitAnswer(userId: string, submitAnswerDto: SubmitAnswerDto): Promise<AssessmentResponseDto>;
+    private _updateSkillScoreTransactional;
+    calculateOverallScore(sessionId: string): Promise<{
+        score: number;
+        level: number;
+    }>;
+    updateSkillScore(userId: string, skillId: string, score: number, level: number): Promise<AssessmentSkillScore>;
+    validateSessionAndOwnership(userId: string, sessionId: string): Promise<AssessmentSession>;
+    validateQuestionForSession(session: AssessmentSession, questionId: string): Promise<Question>;
+    checkAnswer(question: Question, userResponse: string): boolean;
+    createResponseEntity(session: AssessmentSession, question: Question, userResponse: string, isCorrect: boolean): AssessmentResponse;
+    processSubmissionWithTransaction(response: AssessmentResponse, session: AssessmentSession, question: Question, isCorrect: boolean): Promise<AssessmentResponse>;
+    mapToResponseDto(response: AssessmentResponse): AssessmentResponseDto;
+    startAssessment(userId: string, startAssessmentDto: StartAssessmentDto): Promise<AssessmentSession>;
+}
