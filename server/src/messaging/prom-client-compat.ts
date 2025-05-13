@@ -53,23 +53,20 @@ class Registry {
   }
 }
 
-// Create internal promClient object
-const promClient = {
-  Counter,
-  Histogram,
-  Registry,
-  register: new Registry(),
-  linearBuckets: (start: number, width: number, count: number) => {
-    const buckets = [];
-    for (let i = 0; i < count; i++) {
-      buckets.push(start + (width * i));
-    }
-    return buckets;
-  },
-  collectDefaultMetrics: () => {
-    console.log('Default metrics collection initialized');
+// Create internal promClient object without external dependency
+const register = new Registry();
+
+function collectDefaultMetrics() {
+  console.log('Default metrics collection initialized');
+}
+
+function linearBuckets(start: number, width: number, count: number) {
+  const buckets = [];
+  for (let i = 0; i < count; i++) {
+    buckets.push(start + (width * i));
   }
-};
+  return buckets;
+}
 
 // Exporter compatibility class
 export class PrometheusExporter {
@@ -100,7 +97,7 @@ export class MeterProvider {
       createHistogram: (name: string, options: any) => new Histogram({
         name, 
         help: options.description || name,
-        buckets: options.boundaries || promClient.linearBuckets(0.1, 0.5, 10),
+        buckets: options.boundaries || linearBuckets(0.1, 0.5, 10),
       })
     };
   }
