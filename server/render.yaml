@@ -9,9 +9,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false # Set this manually in Render dashboard
+        sync: false # Set this manually in Render dashboard - postgres://user:pass@host:port/db
       - key: SUPABASE_PROJECT_URL
-        sync: false # Set this manually in Render dashboard
+        sync: false # Set this manually in Render dashboard - https://your-project.supabase.co
       - key: SUPABASE_ANON_KEY
         sync: false # Set this manually in Render dashboard
       - key: JWT_SECRET
@@ -25,4 +25,13 @@ services:
       - key: PORT
         value: "3002"
       - key: CORS_ORIGIN
-        value: "https://{{RENDER_SERVICE_NAME}}.onrender.com" # Will be replaced with actual frontend URL 
+        value: "https://{{RENDER_SERVICE_NAME}}.onrender.com" # Will be replaced with actual frontend URL
+      # RabbitMQ settings - you can disable these if not using RabbitMQ
+      - key: RABBITMQ_URL
+        sync: false # Optional - set this manually in Render dashboard if using RabbitMQ
+      - key: RABBITMQ_QUEUE
+        value: "assessment"
+      - key: RABBITMQ_EXCHANGE
+        value: "assessments"
+      - key: RABBITMQ_ROUTING_KEY
+        value: "assessment.new" 
